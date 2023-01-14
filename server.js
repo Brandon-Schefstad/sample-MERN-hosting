@@ -25,6 +25,8 @@ async function connect() {
 }
 app.use(logger('dev'))
 connect()
+app.use(cors())
+
 app.get('/', (req, res) => {
 	res.json({ Hello: 'World' })
 })
