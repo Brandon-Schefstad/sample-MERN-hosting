@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3001
 require('dotenv').config({ path: './config/.env' })
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const Movie = require('./models/Movie')
 
 const connectDB = async () => {
 	try {
@@ -26,7 +27,21 @@ async function connect() {
 app.use(logger('dev'))
 connect()
 app.use(cors())
-
-app.get('/', (req, res) => {
-	res.json({ Hello: 'World' })
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+app.post('/', async (req, res) => {
+	try {
+		const newMovie = await Movie.create({
+			movieName: req.body.movieToSend.movieName,
+			seen: req.body.movieToSend.seen,
+		})
+		res.json({ newMovie })
+	} catch (error) {
+		console.error(error)
+	}
+})
+app.get('/', async (req, res) => {
+	console.log('fetching movies')
+	const allMovies = await Movie.find()
+	res.json(allMovies)
 })
