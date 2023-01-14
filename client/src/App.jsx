@@ -7,7 +7,7 @@ function App() {
 	const [checked, setChecked] = useState(false)
 	const [movieName, setMovieName] = useState('')
 	async function callToAPI() {
-		const response = await axios.get('https://muddy-peplum-bass.cyclic.app/')
+		const response = await axios.get('https://sample-mern-hosting.cyclic.app/')
 		setClientSideMovies(await response.data)
 	}
 
@@ -22,9 +22,12 @@ function App() {
 	/** Sends movie to database, then resets the state of the application and fetches all of the movies again */
 	async function handleSubmit(e) {
 		e.preventDefault() //<- Important for React, prevents page refresh on form submits!
-		const response = await axios.post('https://muddy-peplum-bass.cyclic.app/', {
-			movieToSend: { movieName, seen: checked },
-		})
+		const response = await axios.post(
+			'https://sample-mern-hosting.cyclic.app/',
+			{
+				movieToSend: { movieName, seen: checked },
+			}
+		)
 		if (response.status === 200) {
 			setMovieName('')
 			setChecked(false)
