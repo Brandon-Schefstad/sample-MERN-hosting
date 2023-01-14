@@ -7,19 +7,22 @@ function App() {
 	const [checked, setChecked] = useState(false)
 	const [movieName, setMovieName] = useState('')
 	async function callToAPI() {
-		const response = await axios.get('http://localhost:5000/')
+		const response = await axios.get('https://muddy-peplum-bass.cyclic.app/')
 		setClientSideMovies(await response.data)
-		console.log(response.data)
 	}
 
+	/** Assigns either 'seen' or 'movieName' */
 	function handleChange(e, name) {
-		name === 'seen' ? setChecked(!checked) : setMovieName(e.target.value)
-		console.log(checked)
+		if (name === 'seen') {
+			setChecked(!checked)
+		} else {
+			setMovieName(e.target.value)
+		}
 	}
+	/** Sends movie to database, then resets the state of the application and fetches all of the movies again */
 	async function handleSubmit(e) {
-		e.preventDefault()
-		console.log({ movieName, checked })
-		const response = await axios.post('http://localhost:5000/', {
+		e.preventDefault() //<- Important for React, prevents page refresh on form submits!
+		const response = await axios.post('https://muddy-peplum-bass.cyclic.app/', {
 			movieToSend: { movieName, seen: checked },
 		})
 		if (response.status === 200) {
@@ -29,6 +32,7 @@ function App() {
 			document.getElementById('movieName').value = ''
 		}
 	}
+	/**Load in movies from database when app starts */
 	useEffect(() => {
 		callToAPI()
 	}, [])
@@ -45,7 +49,6 @@ function App() {
 				<label htmlFor="seen">
 					Seen it?
 					<Checkbox
-						id="seen"
 						name="seen"
 						checked={checked}
 						handleChange={(e) => handleChange(e, 'seen')}
@@ -53,6 +56,7 @@ function App() {
 				</label>
 				<input type="submit" value="Send Movie" />
 			</form>
+			{/* If there are movies in the database, display them here. */}
 			{clientSideMovies ? (
 				<ul>
 					{clientSideMovies.map((movie) => (
@@ -64,6 +68,7 @@ function App() {
 					))}
 				</ul>
 			) : (
+				/** Otherwise show nothing */
 				<></>
 			)}
 		</>
